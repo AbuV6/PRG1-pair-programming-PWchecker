@@ -1,4 +1,5 @@
 const fs = require("fs"); // Importing fs to allow us to use it.
+const { listenerCount } = require("process");
 const readline = require('readline-sync');  // Import readline-sync for synchronous input
 
 
@@ -47,36 +48,59 @@ function getPasswordStrength(password) {
       return "Strong";
     } else if (conditionsPassed >= 3) {
       return "Medium";
-    } else {
+    } else{
       return "Weak";
     }
-  }
-
+    
+    };
+        
+    const inputFile = "./common_passwords.txt"
+    const data = fs.readFileSync(inputFile, "utf-8")
+    const lines = data.split(/\n/)
 
 function getPasswordFromUser() {
     const password = readline.question("Please enter your password: ", {
         hideEchoBack: true  // Masks the password input for privacy
     });
-    const currentDateTime = getCurrentDateTimeFormatted();
-    fs.appendFileSync(outputFile, `${currentDateTime}\n`, "utf-8");
-
+      if (lines.includes(password)){
+        console.log('PLEASE DO NOT USE THESE WEAK PASSWORDS')
+  
+      }
     const strength = getPasswordStrength(password);
     console.log(`Password strength: ${strength}`);
-
+    let splitPassword = password.split("").reverse().join("")
     if (strength === "Strong") {
         console.log("Your password is strong.");
-    } else {
-        console.log("Password does not meet the criteria. Please enter a different password.");
-        getPasswordFromUser();  
+
+        fs.appendFileSync("./entered_password.txt", `User Password: ${splitPassword} --- ` , "utf-8")
+
+        const currentDateTime = getCurrentDateTimeFormatted();
+        fs.appendFileSync("./entered_password.txt", `Current Time: ${currentDateTime}\n`, "utf-8");
+
+    } 
     }
-}
+
 
 // End of functions
 
-const outputFile = "./checking_password_log.txt";
+
 
 // Enter code to read in the 25 most common passwords from the text file here.
-getPasswordFromUser();
+
+// lines.forEach((line)=> {
+//   if(passwordCriteria.test(line)){
+//     console.log('Good password')
+//   }else {
+//     console.log('Bad Password')
+//   }
+// })
+
+// const enteredPassFile = "./entered_passwords.txt"
+// const enteredData = fs.readFileSync(enteredPassFile,"utf-8")
+
+getPasswordFromUser()
+
+
 
 
 
